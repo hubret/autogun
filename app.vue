@@ -131,6 +131,7 @@
 </script>
 
 <template>
+  <NuxtPwaManifest/>
   <main>
     <div class="todo-container">
       <div class="todo-list-column">

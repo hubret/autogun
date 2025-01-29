@@ -19,11 +19,13 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@vite-pwa/nuxt'],
   pwa: {
+    registerType: 'autoUpdate',
     manifest: {
       name: 'Autogun',
       short_name: 'Autogun',
       description: 'To-do list',
       orientation: 'portrait',
+      background_color: '#1a1a1a',
       theme_color: '#1a1a1a',
       icons: [
         {
@@ -38,9 +40,5 @@ export default defineNuxtConfig({
         }
       ]
     },
-    workbox: {
-      navigateFallback: '/',
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}']
-    }
   }
 })
