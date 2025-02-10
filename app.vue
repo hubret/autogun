@@ -5,6 +5,8 @@
   const selectedTag = ref('')
   const statusFilter = ref('active')
 
+  const menuOpen = ref(false)
+
   const config = ref({
     soundEnabled: false,
   })
@@ -138,9 +140,8 @@
         <div class="filters">
           <div class="filters-row">
             <button @click="toggleStatusFilter" :class="['status-toggle', { active: statusFilter === 'completed' }]">
-              Show {{ statusFilter === 'active' ? 'Completed' : 'Active' }}
+              {{ statusFilter[0].toUpperCase() + statusFilter.slice(1) + ' ⇄' }}
             </button>
-            <div class="separator"></div>
             <div class="tag-filters">
               <span v-for="tag in tagFrequencies" :key="tag" :class="['filter-tag', { active: selectedTag === tag }]"
                 @click="selectTag(tag)">
@@ -202,7 +203,12 @@
           </Transition>
         </div>
       </div>
-      <div class="input-column">
+      <div class="input-column slide-menu" :class="{ 'open': menuOpen }">
+        <button class="slide-toggle" @click="menuOpen = !menuOpen">
+          <span class="slide-icon">
+            <svg v-if="menuOpen" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>          </span>
+        </button>
         <div class="input-container">
           <TransitionGroup name="form">
             <div v-if="tagFrequencies.length" class="quick-tags">
@@ -227,12 +233,52 @@
             </div>
           </TransitionGroup>
         </div>
+        
       </div>
     </div>
   </main>
 </template>
 
 <style scoped>
+
+  .slide-menu{
+    transition: right 0.3s ease-in-out;
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    max-width: 100vw;
+    height: 100%;
+    background-color: var(--bg-color);
+    z-index: 999;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+  }
+
+  .slide-menu.open{
+    right: 0;
+  }
+
+  .slide-menu .slide-toggle{
+    padding: 8px;
+    transition: translate 0.3s ease-in-out;
+    translate: calc(-100% - 20px);
+    margin-bottom: 20px;
+    background-color: #2a2a2a;
+    border: 1px solid var(--border-color);
+    aspect-ratio: 1;
+    border-radius: 50%;
+  }
+
+  .slide-toggle svg{
+    display: block;
+  }
+
+  .slide-menu.open .slide-toggle{
+    translate: 0;
+  }
+
   .hidden-checkbox {
     position: absolute;
     opacity: 0;
@@ -381,29 +427,14 @@
 
   .filters-row {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 15px;
   }
 
   .separator {
     width: 1px;
-    height: 24px;
+    height: 100%;
     background-color: var(--border-color);
-  }
-
-  .status-toggle {
-    white-space: nowrap;
-    padding: 6px 12px;
-    background-color: #2a2a2a;
-    border: 1px solid var(--border-color);
-    color: var(--text-color);
-    border-radius: 4px;
-    transition: all 0.2s;
-  }
-
-  .status-toggle.active {
-    background-color: #444;
-    color: white;
   }
 
   .tag-filters {
@@ -423,16 +454,18 @@
     transition: all 0.2s;
   }
 
+  .filter-tag:hover {
+    background-color: #444;
+    color: white;
+  }
+
   .filter-tag.active {
     background-color: var(--accent-color);
     color: white;
   }
 
   .todo-container {
-    display: grid;
-    grid-template-columns: 3fr 2fr;
-    gap: 20px;
-    max-width: 1200px;
+    max-width: 800px;
     margin: 0 auto;
     padding: 20px;
     box-sizing: border-box;
@@ -440,8 +473,8 @@
   }
 
   .todo-list-column {
-    padding-right: 20px;
-    border-right: 1px solid var(--border-color);
+    /* padding-right: 20px; */
+    /* border-right: 1px solid var(--border-color); */
   }
 
   .empty-message {
@@ -452,11 +485,10 @@
   }
 
   .input-column {
-    padding-left: 20px;
+    /* padding-left: 20px; */
   }
 
   .input-container {
-    height: 100%;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -590,7 +622,7 @@
   }
 
   button:hover {
-    background-color: #555;
+    background-color: var(--hover-color);
   }
 
   .delete-btn {
