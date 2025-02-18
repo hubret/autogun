@@ -501,7 +501,6 @@
     flex-wrap: wrap;
     align-items: flex-start;
     gap: 8px;
-    height: 28px;
   }
 
   .quick-tag {
